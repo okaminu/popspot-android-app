@@ -1,0 +1,17 @@
+<resources>
+    <!--
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=13:7C:C3:5E:93:24:F0:40:18:8A:3B:FB:60:2C:C9:67:C2:92:29:20%3Bcom.jaguarsoft.mac.favouriteplaces
+
+    You can also add your credentials to an existing key, using this line:
+    13:7C:C3:5E:93:24:F0:40:18:8A:3B:FB:60:2C:C9:67:C2:92:29:20;com.jaguarsoft.mac.favouriteplaces
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+        AIzaSyD0cNSG3sCTR_O4nXEfaAfU1N4sV97eOTY
+    </string>
+</resources>
