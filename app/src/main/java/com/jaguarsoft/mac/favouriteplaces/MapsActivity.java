@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity {
         if (location != null)
         {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 13));
+                    new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
