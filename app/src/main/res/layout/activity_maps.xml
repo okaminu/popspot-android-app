@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="20dp"
         android:id="@+id/linearLayout">
 
         <Button
@@ -48,12 +48,14 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_above="@+id/linearLayout"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp">
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_mode_comment_36dp"
-            android:id="@+id/button" />
+            android:src="@drawable/ic_mode_comment_36dp"
+            android:id="@+id/imageButton"
+            android:padding="25dp" />
     </LinearLayout>
 </RelativeLayout>
