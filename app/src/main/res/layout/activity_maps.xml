@@ -23,19 +23,19 @@
         android:id="@+id/linearLayout">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/buttonLike"
             android:layout_width="140dp"
             android:layout_height="fill_parent"
             android:drawableLeft="@drawable/ic_thumb_up_48dp"
             android:text="@string/likeButton"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
 
         <Space
             android:layout_width="20dp"
             android:layout_height="match_parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonDislike"
             android:layout_width="140dp"
             android:layout_height="fill_parent"
             android:drawableLeft="@drawable/ic_thumb_down_48dp"
@@ -52,10 +52,10 @@
         android:layout_marginBottom="5dp">
 
         <ImageButton
+            android:id="@+id/buttonComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_mode_comment_36dp"
-            android:id="@+id/imageButton"
             android:padding="25dp" />
     </LinearLayout>
 </RelativeLayout>

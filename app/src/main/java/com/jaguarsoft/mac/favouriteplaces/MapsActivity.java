@@ -6,6 +6,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,12 +20,17 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private boolean commentEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        setupButtons();
+
+
+
     }
 
     @Override
@@ -85,4 +94,73 @@ public class MapsActivity extends FragmentActivity {
         }
 
     }
+
+
+    protected void setupButtons(){
+        final Button buttonLike = (Button) findViewById(R.id.buttonLike);
+        buttonLike.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(commentEnabled){
+
+                }
+                else{
+
+                }
+            }
+        });
+
+        final Button buttonDislike = (Button) findViewById(R.id.buttonDislike);
+        buttonDislike.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(commentEnabled){
+
+                }
+                else{
+
+                }
+            }
+        });
+
+        final ImageButton buttonComment = (ImageButton) findViewById(R.id.buttonComment);
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(commentEnabled) {
+                    commentEnabled = false;
+                    buttonComment.setImageResource(R.drawable.ic_mode_comment_gray_36dp);
+                }
+                else {
+                    commentEnabled = true;
+                    buttonComment.setImageResource(R.drawable.ic_mode_comment_36dp);
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
