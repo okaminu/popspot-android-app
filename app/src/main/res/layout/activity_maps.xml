@@ -19,7 +19,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_marginBottom="25dp">
+        android:layout_marginBottom="25dp"
+        android:id="@+id/linearLayout">
 
         <Button
             android:id="@+id/button1"
@@ -40,5 +41,19 @@
             android:drawableLeft="@drawable/ic_thumb_down_48dp"
             android:text="@string/dislikeButton"
             android:textSize="22sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_mode_comment_36dp"
+            android:id="@+id/button" />
     </LinearLayout>
 </RelativeLayout>
