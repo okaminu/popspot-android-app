@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -97,6 +96,7 @@ public class MapsActivity extends FragmentActivity {
 
 
     protected void setupButtons(){
+
         final Button buttonLike = (Button) findViewById(R.id.buttonLike);
         buttonLike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

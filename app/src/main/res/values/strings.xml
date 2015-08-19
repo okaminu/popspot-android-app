@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="likeButton">Like</string>
     <string name="dislikeButton">Dislike</string>
+    <string name="CommentHeader">Comment</string>
 </resources>
