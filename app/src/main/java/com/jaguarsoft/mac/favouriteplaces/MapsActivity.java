@@ -1,6 +1,7 @@
 package com.jaguarsoft.mac.favouriteplaces;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -101,6 +102,9 @@ public class MapsActivity extends FragmentActivity {
         buttonLike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
+                    Intent intent = new Intent(this, CommentActivity.class);
+
+                    startActivity(intent);
 
                 }
                 else{
@@ -113,7 +117,9 @@ public class MapsActivity extends FragmentActivity {
         buttonDislike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
+                    Intent intent = new Intent(this, CommentActivity.class);
 
+                    startActivity(intent);
                 }
                 else{
 
