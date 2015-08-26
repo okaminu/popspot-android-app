@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private boolean commentEnabled = true;
+    private boolean commentEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,24 +142,6 @@ public class MapsActivity extends FragmentActivity {
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
