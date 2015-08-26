@@ -5,8 +5,6 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Comments" parent="android:Theme.WallpaperSettings">
 
-    </style>
 
 </resources>

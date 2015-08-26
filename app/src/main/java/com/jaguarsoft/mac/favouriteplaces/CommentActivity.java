@@ -1,11 +1,10 @@
 package com.jaguarsoft.mac.favouriteplaces;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

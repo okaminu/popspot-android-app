@@ -97,12 +97,12 @@ public class MapsActivity extends FragmentActivity {
 
 
     protected void setupButtons(){
-
+        final Context context = this;
         final Button buttonLike = (Button) findViewById(R.id.buttonLike);
         buttonLike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
-                    Intent intent = new Intent(this, CommentActivity.class);
+                    Intent intent = new Intent(context, CommentActivity.class);
 
                     startActivity(intent);
 
@@ -114,10 +114,11 @@ public class MapsActivity extends FragmentActivity {
         });
 
         final Button buttonDislike = (Button) findViewById(R.id.buttonDislike);
+
         buttonDislike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
-                    Intent intent = new Intent(this, CommentActivity.class);
+                    Intent intent = new Intent(context, CommentActivity.class);
 
                     startActivity(intent);
                 }

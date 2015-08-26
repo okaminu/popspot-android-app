@@ -16,7 +16,8 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -27,7 +28,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +38,6 @@
         <activity
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
-            android:theme="@style/Comments"
             android:parentActivityName=".MapsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
