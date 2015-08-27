@@ -5,17 +5,22 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
+import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -24,6 +29,7 @@ public class MapsActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        new FavoriteLocationTask().execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
@@ -68,35 +74,6 @@ public class MapsActivity extends FragmentActivity {
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-        mMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
-
-        if (location != null)
-        {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 17));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-        }
-
-    }
-
-
     protected void setupButtons(){
         final Context context = this;
         final Button buttonLike = (Button) findViewById(R.id.buttonLike);
@@ -132,11 +109,10 @@ public class MapsActivity extends FragmentActivity {
         final ImageButton buttonComment = (ImageButton) findViewById(R.id.buttonComment);
         buttonComment.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(commentEnabled) {
+                if (commentEnabled) {
                     commentEnabled = false;
                     buttonComment.setImageResource(R.drawable.ic_mode_comment_gray_36dp);
-                }
-                else {
+                } else {
                     commentEnabled = true;
                     buttonComment.setImageResource(R.drawable.ic_mode_comment_36dp);
                 }
@@ -145,6 +121,53 @@ public class MapsActivity extends FragmentActivity {
     }
 
 
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p/>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+    private void setUpMap() {
+        mMap.setMyLocationEnabled(true);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
+
+        if (location != null)
+        {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 17));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(15)                   // Sets the zoom
+                    .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        }
+
+    }
+
+    private class FavoriteLocationTask extends AsyncTask<Integer, Integer, LocationVote[]>
+    {
+        @Override
+        protected LocationVote[] doInBackground(Integer... integers) {
+            ApiClientFactory apiClientFactory = new ApiClientFactory();
+            return apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
+        }
+
+        @Override
+        protected void onPostExecute(LocationVote[] locationVotes) {
+            super.onPostExecute(locationVotes);
+            for (LocationVote locationVote : locationVotes)
+            {
+                String comment = locationVote.feedback.comment;
+                Toast toast = Toast.makeText(getApplicationContext(), comment, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
 
 
 
