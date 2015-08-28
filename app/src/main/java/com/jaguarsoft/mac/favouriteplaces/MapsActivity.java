@@ -1,10 +1,11 @@
 package com.jaguarsoft.mac.favouriteplaces;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -29,14 +30,17 @@ public class MapsActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        new FavoriteLocationTask().execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         setupButtons();
+    }
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(checkInternetConnection())
+            new FavoriteLocationTask().execute();
     }
 
     @Override
@@ -44,8 +48,9 @@ public class MapsActivity extends FragmentActivity {
         super.onResume();
         setUpMapIfNeeded();
     }
-//lots of comments
-    //dsad1123w1ed
+
+
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -75,17 +80,16 @@ public class MapsActivity extends FragmentActivity {
     }
 
     protected void setupButtons(){
-        final Context context = this;
+        //final Context context = this;
+        //Intent intent = new Intent(context, CommentActivity.class);
+        //startActivity(intent);
         final Button buttonLike = (Button) findViewById(R.id.buttonLike);
         buttonLike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
-                    Intent intent = new Intent(context, CommentActivity.class);
-
-                    startActivity(intent);
-
                 }
                 else{
+
 
                 }
             }
@@ -96,17 +100,15 @@ public class MapsActivity extends FragmentActivity {
         buttonDislike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(commentEnabled){
-                    Intent intent = new Intent(context, CommentActivity.class);
-
-                    startActivity(intent);
                 }
                 else{
+
 
                 }
             }
         });
 
-        final ImageButton buttonComment = (ImageButton) findViewById(R.id.buttonComment);
+        /*final ImageButton buttonComment = (ImageButton) findViewById(R.id.buttonComment);
         buttonComment.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (commentEnabled) {
@@ -117,7 +119,7 @@ public class MapsActivity extends FragmentActivity {
                     buttonComment.setImageResource(R.drawable.ic_mode_comment_36dp);
                 }
             }
-        });
+        });*/
     }
 
 
@@ -131,7 +133,6 @@ public class MapsActivity extends FragmentActivity {
         mMap.setMyLocationEnabled(true);
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
 
         if (location != null)
@@ -144,7 +145,6 @@ public class MapsActivity extends FragmentActivity {
                     .zoom(15)                   // Sets the zoom
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
         }
 
     }
@@ -167,7 +167,24 @@ public class MapsActivity extends FragmentActivity {
                 toast.show();
             }
         }
+
+
     }
+
+    private boolean checkInternetConnection(){
+        final Context context = this;
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+
+
+
 
 
 
