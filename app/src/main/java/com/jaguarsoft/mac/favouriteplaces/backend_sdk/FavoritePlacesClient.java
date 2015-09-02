@@ -30,5 +30,13 @@ public interface FavoritePlacesClient {
      */
     @Operation(path = "/get-ratings", method = "GET")
     LocationVote[] getRatingsGet();
+
+    /**
+     *
+     *
+     * @return Empty
+     */
+    @Operation(path = "/put-rating", method = "POST")
+    void putRatingPost(LocationVote locationVote);
     
 }
