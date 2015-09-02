@@ -18,8 +18,10 @@ import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 
@@ -162,9 +164,22 @@ public class MapsActivity extends FragmentActivity {
             super.onPostExecute(locationVotes);
             for (LocationVote locationVote : locationVotes)
             {
+                float color;
+                double longitude = locationVote.location.longitude;
+                double latitude = locationVote.location.latitude;
+                String rating = locationVote.feedback.rating;
                 String comment = locationVote.feedback.comment;
-                Toast toast = Toast.makeText(getApplicationContext(), comment, Toast.LENGTH_SHORT);
-                toast.show();
+
+                if(rating=="0")
+                    color = BitmapDescriptorFactory.HUE_RED;
+                else
+                    color = BitmapDescriptorFactory.HUE_GREEN;
+
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitude, longitude))
+                        .title(comment)
+                        .icon(BitmapDescriptorFactory.defaultMarker(color)));
+
             }
         }
 
