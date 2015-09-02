@@ -170,7 +170,8 @@ public class MapsActivity extends FragmentActivity {
                 String rating = locationVote.feedback.rating;
                 String comment = locationVote.feedback.comment;
 
-                if(rating=="0")
+
+                if(rating.equals("0"))
                     color = BitmapDescriptorFactory.HUE_RED;
                 else
                     color = BitmapDescriptorFactory.HUE_GREEN;
