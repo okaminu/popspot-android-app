@@ -1,0 +1,1 @@
+![PopSpotLogo.png](https://bitbucket.org/repo/ggyGoa/images/1026510120-PopSpotLogo.png)
