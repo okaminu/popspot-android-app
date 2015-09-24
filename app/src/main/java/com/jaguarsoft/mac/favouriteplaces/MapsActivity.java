@@ -7,10 +7,12 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,8 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
-
-//jjj
 
 public class MapsActivity extends FragmentActivity {
 
