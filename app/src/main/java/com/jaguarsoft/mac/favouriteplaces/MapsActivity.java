@@ -165,8 +165,8 @@ public class MapsActivity extends FragmentActivity {
             for (LocationVote locationVote : locationVotes)
             {
                 float color;
-                double longitude = locationVote.location.longitude;
-                double latitude = locationVote.location.latitude;
+                double longitude = locationVote.coordinates.longitude;
+                double latitude = locationVote.coordinates.latitude;
                 short rating = locationVote.feedback.rating;
                 String comment = locationVote.feedback.comment;
 
