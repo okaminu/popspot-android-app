@@ -167,11 +167,11 @@ public class MapsActivity extends FragmentActivity {
                 float color;
                 double longitude = locationVote.location.longitude;
                 double latitude = locationVote.location.latitude;
-                String rating = locationVote.feedback.rating;
+                short rating = locationVote.feedback.rating;
                 String comment = locationVote.feedback.comment;
 
 
-                if(rating.equals("0"))
+                if(rating == 0)
                     color = BitmapDescriptorFactory.HUE_RED;
                 else
                     color = BitmapDescriptorFactory.HUE_GREEN;
