@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
@@ -28,7 +27,7 @@ import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private boolean commentEnabled = false;
+    //private boolean commentEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class MapsActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         if(checkInternetConnection())
-            new FavoriteLocationTask().execute();
+            new FavoriteLocationGetTask().execute();
     }
 
     @Override
@@ -86,14 +85,11 @@ public class MapsActivity extends FragmentActivity {
         //Intent intent = new Intent(context, CommentActivity.class);
         //startActivity(intent);
         final Button buttonLike = (Button) findViewById(R.id.buttonLike);
+
         buttonLike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(commentEnabled){
-                }
-                else{
+                new FavoriteLocationPutTask((short) 1).execute();
 
-
-                }
             }
         });
 
@@ -101,12 +97,8 @@ public class MapsActivity extends FragmentActivity {
 
         buttonDislike.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(commentEnabled){
-                }
-                else{
+                new FavoriteLocationPutTask((short) 0).execute();
 
-
-                }
             }
         });
 
@@ -133,9 +125,7 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
+        Location location = location();
 
         if (location != null)
         {
@@ -150,10 +140,16 @@ public class MapsActivity extends FragmentActivity {
         }
 
     }
+    private Location location(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        return locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
 
-    private class FavoriteLocationTask extends AsyncTask<Integer, Integer, LocationVote[]>
+    }
+
+    private class FavoriteLocationGetTask extends AsyncTask<Integer, Integer, LocationVote[]>
     {
-        @Override
+                @Override
         protected LocationVote[] doInBackground(Integer... integers) {
             ApiClientFactory apiClientFactory = new ApiClientFactory();
             return apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
@@ -182,6 +178,36 @@ public class MapsActivity extends FragmentActivity {
                         .icon(BitmapDescriptorFactory.defaultMarker(color)));
 
             }
+        }
+
+
+    }
+
+    private class FavoriteLocationPutTask extends AsyncTask<Integer, Integer, LocationVote[]>
+    {
+        private short rating;
+        public FavoriteLocationPutTask(short rating) {
+            this.rating = rating;
+        }
+
+        @Override
+        protected LocationVote[] doInBackground(Integer... integers) {
+            Location location = location();
+            LocationVote locationVote = new LocationVote();
+            locationVote.coordinates.longitude = (float)location.getLongitude();
+            locationVote.coordinates.latitude = (float)location.getLatitude();
+            locationVote.feedback.rating = rating;
+            locationVote.feedback.comment = "";
+            new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+            return new LocationVote[]{locationVote};
+        }
+
+        @Override
+        protected void onPostExecute(LocationVote[] locationVotes) {
+            super.onPostExecute(locationVotes);
+            Context context = getApplicationContext();
+            Toast toast = Toast.makeText(context, "Vote successfully stored", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
 
