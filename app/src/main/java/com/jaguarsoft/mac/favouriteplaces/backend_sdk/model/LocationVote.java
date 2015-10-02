@@ -17,8 +17,8 @@ package com.jaguarsoft.mac.favouriteplaces.backend_sdk.model;
 
 
 public class LocationVote {
-    public Feedback feedback;
-    public Coordinates coordinates;
+    public Feedback feedback = new Feedback();
+    public Coordinates coordinates = new Coordinates();
 
 }
 

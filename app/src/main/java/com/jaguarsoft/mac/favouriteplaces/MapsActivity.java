@@ -194,8 +194,8 @@ public class MapsActivity extends FragmentActivity {
         protected LocationVote[] doInBackground(Integer... integers) {
             Location location = location();
             LocationVote locationVote = new LocationVote();
-            locationVote.coordinates.longitude = (float)location.getLongitude();
-            locationVote.coordinates.latitude = (float)location.getLatitude();
+            locationVote.coordinates.longitude = location.getLongitude();
+            locationVote.coordinates.latitude = location.getLatitude();
             locationVote.feedback.rating = rating;
             locationVote.feedback.comment = "";
             new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
