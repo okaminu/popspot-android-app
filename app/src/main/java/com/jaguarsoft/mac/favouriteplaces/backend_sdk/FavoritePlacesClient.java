@@ -19,6 +19,7 @@ import com.amazonaws.mobileconnectors.apigateway.annotation.Operation;
 import com.amazonaws.mobileconnectors.apigateway.annotation.Service;
 
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
+import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status;
 
 //@Service(endpoint = "https://9v0rdn68rk.execute-api.eu-west-1.amazonaws.com/v1")
 @Service(endpoint = "http://192.168.0.100:8080")
@@ -38,6 +39,6 @@ public interface FavoritePlacesClient {
      * @return Empty
      */
     @Operation(path = "/put-rating", method = "POST")
-    void putRatingPost(LocationVote locationVote);
-    
+    Status putRatingPost(LocationVote locationVote);
+
 }

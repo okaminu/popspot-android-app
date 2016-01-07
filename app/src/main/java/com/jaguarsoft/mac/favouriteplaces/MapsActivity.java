@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
+import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -40,8 +41,7 @@ public class MapsActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(checkInternetConnection())
-            new FavoriteLocationGetTask().execute();
+        new FavoriteLocationGetTask().execute();
     }
 
     @Override
@@ -49,7 +49,6 @@ public class MapsActivity extends FragmentActivity {
         super.onResume();
         setUpMapIfNeeded();
     }
-
 
 
     /**
@@ -80,7 +79,7 @@ public class MapsActivity extends FragmentActivity {
         }
     }
 
-    protected void setupButtons(){
+    protected void setupButtons() {
         //final Context context = this;
         //Intent intent = new Intent(context, CommentActivity.class);
         //startActivity(intent);
@@ -127,8 +126,7 @@ public class MapsActivity extends FragmentActivity {
         mMap.setMyLocationEnabled(true);
         Location location = location();
 
-        if (location != null)
-        {
+        if (location != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
@@ -140,26 +138,34 @@ public class MapsActivity extends FragmentActivity {
         }
 
     }
-    private Location location(){
+
+    private Location location() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         return locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
 
     }
 
-    private class FavoriteLocationGetTask extends AsyncTask<Integer, Integer, LocationVote[]>
-    {
-                @Override
+    private class FavoriteLocationGetTask extends AsyncTask<Integer, Integer, LocationVote[]> {
+        @Override
         protected LocationVote[] doInBackground(Integer... integers) {
             ApiClientFactory apiClientFactory = new ApiClientFactory();
-            return apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
+            LocationVote[] ratings = new LocationVote[0];
+            try
+            {
+                ratings = apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
+            }
+            catch (Exception ex)
+            {
+                ex.getMessage();
+            }
+            return ratings;
         }
 
         @Override
         protected void onPostExecute(LocationVote[] locationVotes) {
             super.onPostExecute(locationVotes);
-            for (LocationVote locationVote : locationVotes)
-            {
+            for (LocationVote locationVote : locationVotes) {
                 float color;
                 double longitude = locationVote.coordinates.longitude;
                 double latitude = locationVote.coordinates.latitude;
@@ -167,7 +173,7 @@ public class MapsActivity extends FragmentActivity {
                 String comment = locationVote.feedback.comment;
 
 
-                if(rating == 0)
+                if (rating == 0)
                     color = BitmapDescriptorFactory.HUE_RED;
                 else
                     color = BitmapDescriptorFactory.HUE_GREEN;
@@ -176,16 +182,13 @@ public class MapsActivity extends FragmentActivity {
                         .position(new LatLng(latitude, longitude))
                         .title(comment)
                         .icon(BitmapDescriptorFactory.defaultMarker(color)));
-
             }
         }
-
-
     }
 
-    private class FavoriteLocationPutTask extends AsyncTask<Integer, Integer, LocationVote[]>
-    {
+    private class FavoriteLocationPutTask extends AsyncTask<Integer, Integer, LocationVote[]> {
         private short rating;
+
         public FavoriteLocationPutTask(short rating) {
             this.rating = rating;
         }
@@ -198,7 +201,15 @@ public class MapsActivity extends FragmentActivity {
             locationVote.coordinates.latitude = location.getLatitude();
             locationVote.feedback.rating = rating;
             locationVote.feedback.comment = "";
-            new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+            try
+            {
+                com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status = new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+                return new LocationVote[]{locationVote};
+            }
+            catch (Exception ex)
+            {
+                ex.getMessage();
+            }
             return new LocationVote[]{locationVote};
         }
 
@@ -209,30 +220,5 @@ public class MapsActivity extends FragmentActivity {
             Toast toast = Toast.makeText(context, "Vote successfully stored", Toast.LENGTH_SHORT);
             toast.show();
         }
-
-
     }
-
-    private boolean checkInternetConnection(){
-        final Context context = this;
-        ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
 }
