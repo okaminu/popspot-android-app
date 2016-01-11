@@ -4,9 +4,10 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Looper;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,12 +24,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
-import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status;
+
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Handler mHandler;
     //private boolean commentEnabled = false;
+
+    private MapsActivity(){
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                showAndroidMessage(messageToPrint);
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +142,8 @@ public class MapsActivity extends FragmentActivity {
                     new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                        // Sets the center of the map to location user
                     .zoom(15)                   // Sets the zoom
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -158,6 +170,8 @@ public class MapsActivity extends FragmentActivity {
             catch (Exception ex)
             {
                 ex.getMessage();
+                Message message = mHandler.obtainMessage(command, parameter);
+                message.sendToTarget();
             }
             return ratings;
         }
@@ -203,12 +217,14 @@ public class MapsActivity extends FragmentActivity {
             locationVote.feedback.comment = "";
             try
             {
-                com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status = new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+                com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status =
+                        new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
                 return new LocationVote[]{locationVote};
             }
             catch (Exception ex)
             {
                 ex.getMessage();
+                //showAndroidMessage("Failed to submit vote");
             }
             return new LocationVote[]{locationVote};
         }
@@ -216,9 +232,17 @@ public class MapsActivity extends FragmentActivity {
         @Override
         protected void onPostExecute(LocationVote[] locationVotes) {
             super.onPostExecute(locationVotes);
-            Context context = getApplicationContext();
-            Toast toast = Toast.makeText(context, "Vote successfully stored", Toast.LENGTH_SHORT);
-            toast.show();
         }
     }
+
+
+    private void showAndroidMessage(String message){
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+
+
+
 }
