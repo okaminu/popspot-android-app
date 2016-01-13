@@ -32,14 +32,6 @@ public class MapsActivity extends FragmentActivity {
     private Handler mHandler;
     //private boolean commentEnabled = false;
 
-    private MapsActivity(){
-        Handler mHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                showAndroidMessage(messageToPrint);
-            }
-        };
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +44,7 @@ public class MapsActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        createHandlers();
         new FavoriteLocationGetTask().execute();
     }
 
@@ -170,7 +163,7 @@ public class MapsActivity extends FragmentActivity {
             catch (Exception ex)
             {
                 ex.getMessage();
-                Message message = mHandler.obtainMessage(command, parameter);
+                Message message = mHandler.obtainMessage(0, "Failed to retrieve votes: service unreachable");
                 message.sendToTarget();
             }
             return ratings;
@@ -215,16 +208,26 @@ public class MapsActivity extends FragmentActivity {
             locationVote.coordinates.latitude = location.getLatitude();
             locationVote.feedback.rating = rating;
             locationVote.feedback.comment = "";
+            Message message;
             try
             {
                 com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status =
                         new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+
+                if(status.hasProcessed==true) {
+                    message = mHandler.obtainMessage(0, "Vote successfully stored");
+                }
+                else{
+                    message = mHandler.obtainMessage(0, "Failed to store vote");
+                }
+                message.sendToTarget();
                 return new LocationVote[]{locationVote};
             }
             catch (Exception ex)
             {
                 ex.getMessage();
-                //showAndroidMessage("Failed to submit vote");
+                message = mHandler.obtainMessage(0, "Failed to sumbit vote: service unreachable");
+                message.sendToTarget();
             }
             return new LocationVote[]{locationVote};
         }
@@ -238,10 +241,21 @@ public class MapsActivity extends FragmentActivity {
 
     private void showAndroidMessage(String message){
         Context context = getApplicationContext();
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         toast.show();
     }
 
+    public void createHandlers (){
+        mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                switch(message.what){
+                    case 0:
+                        showAndroidMessage(message.obj.toString());
+                }
+            }
+        };
+    }
 
 
 
