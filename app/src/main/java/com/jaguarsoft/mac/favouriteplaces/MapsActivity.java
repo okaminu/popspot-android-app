@@ -39,12 +39,12 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         setupButtons();
+        createHandlers();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        createHandlers();
         new FavoriteLocationGetTask().execute();
     }
 
