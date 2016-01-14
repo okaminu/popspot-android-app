@@ -29,17 +29,18 @@ import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Handler mHandler;
+    private volatile Handler showGUIMessageHandler;
     //private boolean commentEnabled = false;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createHandlers();
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         setupButtons();
-        createHandlers();
     }
 
     @Override
@@ -163,7 +164,8 @@ public class MapsActivity extends FragmentActivity {
             catch (Exception ex)
             {
                 ex.getMessage();
-                Message message = mHandler.obtainMessage(0, "Failed to retrieve votes: service unreachable");
+                Message message = showGUIMessageHandler.obtainMessage
+                        (0, "Failed to retrieve votes: service unreachable");
                 message.sendToTarget();
             }
             return ratings;
@@ -214,11 +216,11 @@ public class MapsActivity extends FragmentActivity {
                 com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status =
                         new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
 
-                if(status.hasProcessed==true) {
-                    message = mHandler.obtainMessage(0, "Vote successfully stored");
+                if(status.hasProcessed) {
+                    message = showGUIMessageHandler.obtainMessage(0, "Vote successfully stored");
                 }
                 else{
-                    message = mHandler.obtainMessage(0, "Failed to store vote");
+                    message = showGUIMessageHandler.obtainMessage(0, "Failed to store vote");
                 }
                 message.sendToTarget();
                 return new LocationVote[]{locationVote};
@@ -226,7 +228,8 @@ public class MapsActivity extends FragmentActivity {
             catch (Exception ex)
             {
                 ex.getMessage();
-                message = mHandler.obtainMessage(0, "Failed to sumbit vote: service unreachable");
+                message = showGUIMessageHandler.obtainMessage
+                        (0, "Failed to sumbit vote: service unreachable");
                 message.sendToTarget();
             }
             return new LocationVote[]{locationVote};
@@ -240,19 +243,16 @@ public class MapsActivity extends FragmentActivity {
 
 
     private void showAndroidMessage(String message){
-        Context context = getApplicationContext();
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-        toast.show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG)
+             .show();
     }
 
     public void createHandlers (){
-        mHandler = new Handler(Looper.getMainLooper()) {
+        showGUIMessageHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-                switch(message.what){
-                    case 0:
-                        showAndroidMessage(message.obj.toString());
-                }
+                if(message.what == 0)
+                    showAndroidMessage(message.obj.toString());
             }
         };
     }
