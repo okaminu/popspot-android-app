@@ -38,6 +38,7 @@ public class MapsActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createHandlers();
+        loadSplash();
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         setupButtons();
@@ -255,6 +256,10 @@ public class MapsActivity extends FragmentActivity {
                     showAndroidMessage(message.obj.toString());
             }
         };
+    }
+
+    private void loadSplash() {
+
     }
 
 
