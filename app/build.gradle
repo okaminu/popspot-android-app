@@ -1,12 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "com.jaguarsoft.mac.favouriteplaces"
+        applicationId 'com.jaguarsoft.mac.favouriteplaces'
+        minSdkVersion 21
+        targetSdkVersion 28
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -16,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.gms:play-services:12.0.1'
+    implementation 'com.amazonaws:aws-android-sdk-apigateway-core:2.16.12'
 }

@@ -4,35 +4,23 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Looper;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
+import android.os.*;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private volatile Handler showGUIMessageHandler;
     //private boolean commentEnabled = false;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +43,35 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p/>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(1);
+        mMap.setMyLocationEnabled(true);
+        Location location = location();
+
+        if (location != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(), location.getLongitude()), 17));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                // Sets the center of the map to location user
+                .zoom(15)                   // Sets the zoom
+                .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+    }
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * installed) and the map has not already been instantiated.
      * <p/>
      * If it isn't installed {@link SupportMapFragment} (and
      * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
@@ -73,15 +85,8 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
+        if (mMap == null)
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
 
     protected void setupButtons() {
@@ -120,31 +125,6 @@ public class MapsActivity extends FragmentActivity {
         });*/
     }
 
-
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-        mMap.setMyLocationEnabled(true);
-        Location location = location();
-
-        if (location != null) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 17));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                        // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-
-    }
-
     private Location location() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -157,15 +137,12 @@ public class MapsActivity extends FragmentActivity {
         protected LocationVote[] doInBackground(Integer... integers) {
             ApiClientFactory apiClientFactory = new ApiClientFactory();
             LocationVote[] ratings = new LocationVote[0];
-            try
-            {
+            try {
                 ratings = apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 ex.getMessage();
                 Message message = showGUIMessageHandler.obtainMessage
-                        (0, "Failed to retrieve votes: service unreachable");
+                    (0, "Failed to retrieve votes: service unreachable");
                 message.sendToTarget();
             }
             return ratings;
@@ -188,9 +165,9 @@ public class MapsActivity extends FragmentActivity {
                     color = BitmapDescriptorFactory.HUE_GREEN;
 
                 mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(latitude, longitude))
-                        .title(comment)
-                        .icon(BitmapDescriptorFactory.defaultMarker(color)));
+                    .position(new LatLng(latitude, longitude))
+                    .title(comment)
+                    .icon(BitmapDescriptorFactory.defaultMarker(color)));
             }
         }
     }
@@ -211,25 +188,21 @@ public class MapsActivity extends FragmentActivity {
             locationVote.feedback.rating = rating;
             locationVote.feedback.comment = "";
             Message message;
-            try
-            {
+            try {
                 com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status =
-                        new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+                    new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
 
-                if(status.hasProcessed) {
+                if (status.hasProcessed) {
                     message = showGUIMessageHandler.obtainMessage(0, "Vote successfully stored");
-                }
-                else{
+                } else {
                     message = showGUIMessageHandler.obtainMessage(0, "Failed to store vote");
                 }
                 message.sendToTarget();
                 return new LocationVote[]{locationVote};
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 ex.getMessage();
                 message = showGUIMessageHandler.obtainMessage
-                        (0, "Failed to sumbit vote: service unreachable");
+                    (0, "Failed to sumbit vote: service unreachable");
                 message.sendToTarget();
             }
             return new LocationVote[]{locationVote};
@@ -242,22 +215,19 @@ public class MapsActivity extends FragmentActivity {
     }
 
 
-    private void showAndroidMessage(String message){
+    private void showAndroidMessage(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG)
-             .show();
+            .show();
     }
 
-    public void createHandlers (){
+    public void createHandlers() {
         showGUIMessageHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-                if(message.what == 0)
+                if (message.what == 0)
                     showAndroidMessage(message.obj.toString());
             }
         };
     }
-
-
-
 
 }
