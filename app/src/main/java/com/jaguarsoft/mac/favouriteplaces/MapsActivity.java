@@ -9,10 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
-import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesClient;
+import com.jaguarsoft.mac.favouriteplaces.backend_sdk.FavoritePlacesGatewayAdapter;
 import com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.LocationVote;
 
 
@@ -135,10 +134,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class FavoriteLocationGetTask extends AsyncTask<Integer, Integer, LocationVote[]> {
         @Override
         protected LocationVote[] doInBackground(Integer... integers) {
-            ApiClientFactory apiClientFactory = new ApiClientFactory();
+            FavoritePlacesGatewayAdapter gatewayAdapter = new FavoritePlacesGatewayAdapter();
             LocationVote[] ratings = new LocationVote[0];
             try {
-                ratings = apiClientFactory.build(FavoritePlacesClient.class).getRatingsGet();
+                ratings = gatewayAdapter.getRatings();
             } catch (Exception ex) {
                 ex.getMessage();
                 Message message = showGUIMessageHandler.obtainMessage
@@ -190,7 +189,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Message message;
             try {
                 com.jaguarsoft.mac.favouriteplaces.backend_sdk.model.Status status =
-                    new ApiClientFactory().build(FavoritePlacesClient.class).putRatingPost(locationVote);
+                    new FavoritePlacesGatewayAdapter().putRating(locationVote);
 
                 if (status.hasProcessed) {
                     message = showGUIMessageHandler.obtainMessage(0, "Vote successfully stored");

@@ -4,6 +4,11 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
     defaultConfig {
         applicationId 'com.jaguarsoft.mac.favouriteplaces'
         minSdkVersion 21
@@ -15,11 +20,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            multiDexEnabled true
+        }
     }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.gms:play-services:12.0.1'
-    implementation 'com.amazonaws:aws-android-sdk-apigateway-core:2.16.12'
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+
 }
